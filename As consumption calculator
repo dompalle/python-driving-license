@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 
 # import the dataframes
 dfexp05 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_05.xlsx')
-print('raw experimental data of arsenic oxide III (As2O3) consumption in hidrogen charging electrochemical cell:')
+print('raw experimental data of arsenic oxide III (As2O3) consumption in hydrogen charging electrochemical cell:')
 print('cathodic current density = 0.5 [mA/cm^2]')
 print(dfexp05)
 dfexp1 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_1.xlsx')
@@ -85,7 +85,6 @@ if ic == 5:
     t5 = c5/surface/ic/h*1000
     print (f"every {int(t5)} hours after the test start, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
 
-#plot to verify the fitting of the experimental data
 plt.scatter(dfexp05['C 05'], dfexp05['mg As2O3 05'], label = "0.5 mA/cm^2")
 plt.scatter(dfexp1['C 1'], dfexp1['mg As2O3 1'], label = "1 mA/cm^2")
 plt.scatter(dfexp5['C 5'], dfexp5['mg As2O3 5'], label = "5 mA/cm^2")
