@@ -6,13 +6,13 @@ from matplotlib import pyplot as plt
 # import the dataframes
 dfexp05 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_05.xlsx')
 print('raw experimental data of arsenic oxide III (As2O3) consumption in hidrogen charging electrochemical cell:')
-print('cathodic current density = 0.5 mA/cm^2')
+print('cathodic current density = 0.5 [mA/cm^2]')
 print(dfexp05)
 dfexp1 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_1.xlsx')
-print('cathodic current density = 1 mA/cm^2')
+print('cathodic current density = 1 [mA/cm^2]')
 print(dfexp1)
 dfexp5 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_5.xlsx')
-print('cathodic current density = 5 mA/cm^2')
+print('cathodic current density = 5 [mA/cm^2]')
 print(dfexp5)
 
 # plot the data from the datadrame
@@ -24,7 +24,7 @@ plt.xlabel('Coulomb [C]')
 plt.ylabel('Consumed As2O3 [mg]')
 
 # enter cathodic current density, duration of the test, total sample surface, maximum loss of reagent, initial reagent.
-print('Parameters')
+print('insert test parameters')
 
 selected = False
 while not selected:
@@ -42,9 +42,9 @@ reag_loss = float(input('enter maximum reagent loss allowed in [%]:'))
 # fixed parameters and relations
 max_loss = init_reag*reag_loss/100
 h = 3600
+print(f'the electrochemical test will last {duration} [h], applied cathodic current density is {ic} [mA/cm^2], the total cathodic surface amount to {surface} [cm^2]. {init_reag} [mg] of As2O3 will be added as reagent at the beginning, and the maximum reduction tolerated of the reagent will be {reag_loss} [%]')
 
 #calculate the amount of arsenic to reintroduce in solution
-
 if ic == 0.5:
     x05exp = dfexp05['C 05'].values.reshape(-1, 1)
     y05exp = dfexp05['mg As2O3 05'].values.reshape(-1, 1)
@@ -58,7 +58,7 @@ if ic == 0.5:
     plt.show()
     c05 = np.interp(max_loss, y05, x05) 
     t05 = c05/surface/ic/h*1000
-    print (f"every {int(t05)} hours after the test start, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
+    print (f"every {int(t05)} hours after the test beginning, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
 
 if ic == 1:
     x1exp = dfexp1['C 1'].values.reshape(-1, 1)
