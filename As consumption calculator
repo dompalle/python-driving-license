@@ -1,0 +1,93 @@
+# import modules
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+
+# import the dataframes
+dfexp05 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_05.xlsx')
+print('raw experimental data of arsenic oxide III (As2O3) consumption in hidrogen charging electrochemical cell:')
+print('cathodic current density = 0.5 mA/cm^2')
+print(dfexp05)
+dfexp1 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_1.xlsx')
+print('cathodic current density = 1 mA/cm^2')
+print(dfexp1)
+dfexp5 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_5.xlsx')
+print('cathodic current density = 5 mA/cm^2')
+print(dfexp5)
+
+# plot the data from the datadrame
+plt.scatter(dfexp05['C 05'], dfexp05['mg As2O3 05'])
+plt.scatter(dfexp1['C 1'], dfexp1['mg As2O3 1'])
+plt.scatter(dfexp5['C 5'], dfexp5['mg As2O3 5'])
+plt.title('Consumed As2O3 vs Coulomb')
+plt.xlabel('Coulomb [C]')
+plt.ylabel('Consumed As2O3 [mg]')
+
+# enter cathodic current density, duration of the test, total sample surface, maximum loss of reagent, initial reagent.
+print('Parameters')
+
+selected = False
+while not selected:
+    ic = float(input('enter cathodic current density in [mA/cm^2]:'))
+    if (ic != 0.5 and ic != 1 and ic != 5):
+        print ("Error! experimental data for As2O3 consumption are available only for an ic of 0.5, 1 and 5 [mA/cm^2]. please insert one of the available ic")
+    else:
+        selected = True
+
+# user-input parameters
+duration = float(input('enter test duration in [h]:'))
+surface = float(input('enter total cathodic surface in [cm^2]:'))
+init_reag = float(input('enter initial reagent mass in [mg]:'))
+reag_loss = float(input('enter maximum reagent loss allowed in [%]:'))
+# fixed parameters and relations
+max_loss = init_reag*reag_loss/100
+h = 3600
+
+#calculate the amount of arsenic to reintroduce in solution
+
+if ic == 0.5:
+    x05exp = dfexp05['C 05'].values.reshape(-1, 1)
+    y05exp = dfexp05['mg As2O3 05'].values.reshape(-1, 1)
+    theta_fit05 = np.linalg.inv(x05exp.T.dot(x05exp)).dot(x05exp.T).dot(y05exp)
+    theta05 = float(theta_fit05)
+
+    #plot the line describing consumtion of arsenic vs coulomb
+    x05 = np.arange(1,duration*h*ic*surface/1000)
+    y05 = x05*theta05
+    plt.plot(x05,y05)
+    plt.show()
+    c05 = np.interp(max_loss, y05, x05) 
+    t05 = c05/surface/ic/h*1000
+    print (f"every {int(t05)} hours after the test start, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
+
+if ic == 1:
+    x1exp = dfexp1['C 1'].values.reshape(-1, 1)
+    y1exp = dfexp1['mg As2O3 1'].values.reshape(-1, 1)
+
+    theta_fit1 = np.linalg.inv(x1exp.T.dot(x1exp)).dot(x1exp.T).dot(y1exp)
+    theta1 = float(theta_fit1)
+
+    #plot the line describing consumtion of arsenic vs coulomb
+    x1 = np.arange(1,duration*h*ic*surface/1000)
+    y1= x1*theta1
+    plt.plot(x1,y1)
+    plt.show()
+    c1 = np.interp(max_loss, y1, x1) 
+    t1 = c1/surface/ic/h*1000
+    print (f"every {int(t1)} hours after the test start, {max_loss} mg of As2O3 shall be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
+
+if ic == 5:
+    x5exp = dfexp5['C 5'].values.reshape(-1, 1)
+    y5exp = dfexp5['mg As2O3 5'].values.reshape(-1, 1)
+
+    theta_fit5 = np.linalg.inv(x5exp.T.dot(x5exp)).dot(x5exp.T).dot(y5exp)
+    theta5 = float(theta_fit5)
+
+    #plot the line describing consumtion of arsenic vs coulomb
+    x5 = np.arange(1,duration*h*ic*surface/1000)
+    y5= x5*theta5
+    plt.plot(x5,y5)
+    plt.show()
+    c5 = np.interp(max_loss, y5, x5) 
+    t5 = c5/surface/ic/h*1000
+    print (f"every {int(t5)} hours after the test start, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
