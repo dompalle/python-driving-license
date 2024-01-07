@@ -16,12 +16,7 @@ print('cathodic current density = 5 [mA/cm^2]')
 print(dfexp5)
 
 # plot the data from the datadrame
-plt.scatter(dfexp05['C 05'], dfexp05['mg As2O3 05'])
-plt.scatter(dfexp1['C 1'], dfexp1['mg As2O3 1'])
-plt.scatter(dfexp5['C 5'], dfexp5['mg As2O3 5'])
-plt.title('Consumed As2O3 vs Coulomb')
-plt.xlabel('Coulomb [C]')
-plt.ylabel('Consumed As2O3 [mg]')
+
 
 # enter cathodic current density, duration of the test, total sample surface, maximum loss of reagent, initial reagent.
 print('insert test parameters')
@@ -54,8 +49,7 @@ if ic == 0.5:
     #plot the line describing consumtion of arsenic vs coulomb
     x05 = np.arange(1,duration*h*ic*surface/1000)
     y05 = x05*theta05
-    plt.plot(x05,y05)
-    plt.show()
+    plt.plot(x05,y05, label = 'linear fitting 0.5 mA/cm^2')
     c05 = np.interp(max_loss, y05, x05) 
     t05 = c05/surface/ic/h*1000
     print (f"every {int(t05)} hours after the test beginning, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
@@ -70,8 +64,7 @@ if ic == 1:
     #plot the line describing consumtion of arsenic vs coulomb
     x1 = np.arange(1,duration*h*ic*surface/1000)
     y1= x1*theta1
-    plt.plot(x1,y1)
-    plt.show()
+    plt.plot(x1,y1, label = 'linear fitting 1 mA/cm^2')
     c1 = np.interp(max_loss, y1, x1) 
     t1 = c1/surface/ic/h*1000
     print (f"every {int(t1)} hours after the test start, {max_loss} mg of As2O3 shall be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
@@ -86,8 +79,18 @@ if ic == 5:
     #plot the line describing consumtion of arsenic vs coulomb
     x5 = np.arange(1,duration*h*ic*surface/1000)
     y5= x5*theta5
-    plt.plot(x5,y5)
-    plt.show()
+    plt.plot(x5,y5, label = 'linear fitting 5 mA/cm^2')
+
     c5 = np.interp(max_loss, y5, x5) 
     t5 = c5/surface/ic/h*1000
     print (f"every {int(t5)} hours after the test start, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
+
+#plot to verify the fitting of the experimental data
+plt.scatter(dfexp05['C 05'], dfexp05['mg As2O3 05'], label = "0.5 mA/cm^2")
+plt.scatter(dfexp1['C 1'], dfexp1['mg As2O3 1'], label = "1 mA/cm^2")
+plt.scatter(dfexp5['C 5'], dfexp5['mg As2O3 5'], label = "5 mA/cm^2")
+plt.title('Consumed As2O3 vs Coulomb')
+plt.xlabel('Coulomb [C]')
+plt.ylabel('Consumed As2O3 [mg]')
+plt.legend(loc="upper left")
+plt.show()
