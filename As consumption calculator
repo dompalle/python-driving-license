@@ -4,8 +4,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # import the dataframes
-dfexp05 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_05.xlsx')
 print('raw experimental data of arsenic oxide III (As2O3) consumption in hydrogen charging electrochemical cell:')
+dfexp05 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_05.xlsx')
 print('cathodic current density = 0.5 [mA/cm^2]')
 print(dfexp05)
 dfexp1 = pd.read_excel('C:\\Users\\lucap\\OneDrive - Politecnico di Milano\\Desktop\\Python Test\\As_cons_1.xlsx')
@@ -26,7 +26,6 @@ while not selected:
     else:
         selected = True
 
-# user-input parameters
 duration = float(input('enter test duration in [h]:'))
 surface = float(input('enter total cathodic surface in [cm^2]:'))
 init_reag = float(input('enter initial reagent mass in [mg]:'))
@@ -38,49 +37,28 @@ print(f'the electrochemical test will last {duration} [h], applied cathodic curr
 
 #calculate the amount of arsenic to reintroduce in solution
 if ic == 0.5:
-    x05exp = dfexp05['C 05'].values.reshape(-1, 1)
-    y05exp = dfexp05['mg As2O3 05'].values.reshape(-1, 1)
-    theta_fit05 = np.linalg.inv(x05exp.T.dot(x05exp)).dot(x05exp.T).dot(y05exp)
-    theta05 = float(theta_fit05)
-
-    #plot the line describing consumtion of arsenic vs coulomb
-    x05 = np.arange(1,duration*h*ic*surface/1000)
-    y05 = x05*theta05
-    plt.plot(x05,y05, label = 'linear fitting 0.5 mA/cm^2')
-    c05 = np.interp(max_loss, y05, x05) 
-    t05 = c05/surface/ic/h*1000
-    print (f"every {int(t05)} hours after the test beginning, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration")
-
+    xexp = dfexp05['C 05'].values.reshape(-1, 1)
+    yexp = dfexp05['mg As2O3 05'].values.reshape(-1, 1)
 if ic == 1:
-    x1exp = dfexp1['C 1'].values.reshape(-1, 1)
-    y1exp = dfexp1['mg As2O3 1'].values.reshape(-1, 1)
-
-    theta_fit1 = np.linalg.inv(x1exp.T.dot(x1exp)).dot(x1exp.T).dot(y1exp)
-    theta1 = float(theta_fit1)
-
-    #plot the line describing consumtion of arsenic vs coulomb
-    x1 = np.arange(1,duration*h*ic*surface/1000)
-    y1= x1*theta1
-    plt.plot(x1,y1, label = 'linear fitting 1 mA/cm^2')
-    c1 = np.interp(max_loss, y1, x1) 
-    t1 = c1/surface/ic/h*1000
-    print (f"every {int(t1)} hours after the test start, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration")
-
+    xexp = dfexp1['C 1'].values.reshape(-1, 1)
+    yexp = dfexp1['mg As2O3 1'].values.reshape(-1, 1)
 if ic == 5:
-    x5exp = dfexp5['C 5'].values.reshape(-1, 1)
-    y5exp = dfexp5['mg As2O3 5'].values.reshape(-1, 1)
+    xexp = dfexp5['C 5'].values.reshape(-1, 1)
+    yexp = dfexp5['mg As2O3 5'].values.reshape(-1, 1)
 
-    theta_fit5 = np.linalg.inv(x5exp.T.dot(x5exp)).dot(x5exp.T).dot(y5exp)
-    theta5 = float(theta_fit5)
+theta_fit = np.linalg.inv(xexp.T.dot(xexp)).dot(xexp.T).dot(yexp)
+theta = float(theta_fit)
 
-    #plot the line describing consumtion of arsenic vs coulomb
-    x5 = np.arange(1,duration*h*ic*surface/1000)
-    y5= x5*theta5
-    plt.plot(x5,y5, label = 'linear fitting 5 mA/cm^2')
-
-    c5 = np.interp(max_loss, y5, x5) 
-    t5 = c5/surface/ic/h*1000
-    print (f"every {int(t5)} hours after the test start, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration. ")
+#plot the line describing consumtion of arsenic vs coulomb
+x = np.arange(1,duration*h*ic*surface/1000)
+y = x*theta
+plt.plot(x,y, label = f'linear fitting {ic} mA/cm^2')
+c = np.interp(max_loss, y, x) 
+t = c/surface/ic/h*1000
+if t <= duration:
+    print('no As2O3 should be added during the test')
+else:
+    print(f"every {int(t)} hours after the test beginning, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration")
 
 #print plot
 plt.scatter(dfexp05['C 05'], dfexp05['mg As2O3 05'], label = "0.5 mA/cm^2")
