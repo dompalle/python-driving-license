@@ -55,7 +55,7 @@ y = x*theta
 plt.plot(x,y, label = f'linear fitting {ic} mA/cm^2')
 c = np.interp(max_loss, y, x) 
 t = c/surface/ic/h*1000
-if t <= duration:
+if t >= duration:
     print('no As2O3 should be added during the test')
 else:
     print(f"every {int(t)} hours after the test beginning, {max_loss} mg of As2O3 should be reintroduced in the solution to restabilish the initial As2O3 concentration")
